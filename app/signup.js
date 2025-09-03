@@ -1,59 +1,54 @@
 import React, { useState } from "react";
-import { View, SafeAreaView, Image, Alert, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  SafeAreaView,
+  Image,
+  Alert,
+  TextInput,
+  Text,
+  TouchableOpacity
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack, useRouter } from "expo-router";
 import { COLORS, icons, SHADOWS } from "../constants";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
-
-
-    const handleLogin = async () => {
-    if (!email || !password) {
+const SignUp = () => {
+    const [userName, setUserName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const router = useRouter();
+    
+    const handleRegister = async () => {
+    if (!userName || !email || !password) {
       Alert.alert("Validation Error", "Please fill in all fields.");
       return;
     }
 
-    const userDetails = { email, password, token: "sample-token" };
+    const userDetails = { userName, email,password, token: "sample-token" };
+    await AsyncStorage.setItem("userDetails", JSON.stringify(userDetails));
+    console.log("User logged in:", userDetails);
 
-    console.log('userDetails', userDetails);
-
-    try {
-      const detailsDatafromSignup = await AsyncStorage.getItem("userDetails");
-      if (detailsDatafromSignup) {
-        const parsedDetails = JSON.parse(detailsDatafromSignup);
-        if (userDetails.email === parsedDetails.email && userDetails.password === parsedDetails.password) {
-          router.push("/home");
-        } else {
-          Alert.alert("Error", "Incorrect email or password.");
-          alert("Error Incorrect email or password.");
-        }
-      } else {
-        Alert.alert("Error", "No user details found in AsyncStorage.");
-        alert("Error No user details found in AsyncStorage.");
-      }
-    } catch (error) {
-      console.error("Error accessing AsyncStorage", error);
-    }
+    router.push("/login");
   };
 
 
+    return (
+            <>
 
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
-     <Stack.Screen
+            <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
+
+                <Stack.Screen
         options={{
           headerStyle: { backgroundColor: COLORS.lightWhite },
           headerShadowVisible: false,
           headerLeft: () => (
-<></>
+        <></>
           ),
           headerTitle: "",
         }}
       />
-      <View style={{ padding: 20 }}>
+
+      <View style={{ padding: 20 }} testID="signupContainer">
         <View
           style={{
             padding: 20,
@@ -65,24 +60,37 @@ const Login = () => {
             ...SHADOWS.medium,
             shadowColor: COLORS.white,
           }}
+          testID="imageIcon"
         >
           <Image
             source={icons.menu}
             style={{
               width: 50,
               height: 50,
-              marginBottom: 20,
             }}
           />
         </View>
-
-        {/* Form Component */}
-        <View style={{ marginTop: 20 }}>
-          <View style={{ marginBottom: 20 }}>
+        <View style={{ marginTop: 30 }} testID="formData">
+            <View style={{ marginBottom: 10 }} testID="userName">
             <TextInput
               style={{
-                borderWidth: 1,
                 borderColor: "#ccc",
+                borderWidth: 1,
+                padding: 10,
+                borderRadius: 5,
+                marginBottom: 10,
+              }}
+              value={userName}
+              onChangeText={setUserName}
+              placeholder="UserName"
+            />
+</View>
+
+  <View style={{ marginBottom: 10 }} testID="email">
+            <TextInput
+              style={{
+                borderColor: "#ccc",
+                borderWidth: 1,
                 padding: 10,
                 borderRadius: 5,
                 marginBottom: 10,
@@ -91,52 +99,58 @@ const Login = () => {
               onChangeText={setEmail}
               placeholder="Email"
             />
+          </View>
+
+          <View style={{ marginBottom: 20 }} testID="password">
             <TextInput
               style={{
-                borderWidth: 1,
                 borderColor: "#ccc",
+                borderWidth: 1,
                 padding: 10,
                 borderRadius: 5,
-                marginBottom: 10,
               }}
               value={password}
-              secureTextEntry={true}
               onChangeText={setPassword}
+              secureTextEntry={true}
               placeholder="Password"
             />
           </View>
-          <TouchableOpacity
+
+</View>
+ <TouchableOpacity
             style={{
               backgroundColor: COLORS.primary,
               padding: 15,
               borderRadius: 5,
               alignItems: "center",
+              marginBottom: 10,
             }}
-            onPress={handleLogin}
+            onPress={handleRegister}
+            testID="handleRegister"
           >
-            <Text style={{ color: "#fff", fontWeight: "bold" }}>Login</Text>
+            <Text style={{ color: "#fff", fontWeight: "bold" }}>Sign Up</Text>
           </TouchableOpacity>
-        </View>
+            <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 5,
+            }}
+            testID="textData"
+          >
+            <Text style={{ marginRight: 5 }}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => router.push("/login")}>
+              <Text style={{ color: "blue" }}>Login</Text>
+            </TouchableOpacity>
+          </View>
+</View>
 
-        {/* Additional Options */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            margin: 10,
-          }}
-        >
-          <Text style={{ marginRight: 5 }}>
-            Don't have an account?
-          </Text>
-          <TouchableOpacity onPress={() => router.push("/signup")}>
-            <Text style={{ color: "blue" }}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
-  );
-};
+</SafeAreaView>
 
-export default Login;
+            </>
+
+        )
+}
+
+export default SignUp;
