@@ -3,6 +3,7 @@ import { SafeAreaView, ScrollView, View } from "react-native";
 import { COLORS, SIZES } from "../constants/theme";
 import ScreenHeaderBtn from "../components/ScreenHeaderBtn"
 import Welcome from "../components/Welcome"
+import PopularMeditation from "../components/PopularMeditation"
 const Home = () => {
 
   const [userDetails, setUserDetails] = useState(null);
@@ -30,6 +31,7 @@ const Home = () => {
         >
 
        <Welcome userDetails={userDetails ? JSON.parse(userDetails) : null} />
+            <PopularMeditation/>
         </View>
       </ScrollView>
     </SafeAreaView>
